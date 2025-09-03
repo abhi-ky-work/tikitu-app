@@ -6,4 +6,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class UserService {
     constructor(private prisma: PrismaService){}
 
+    saveUserDetails(){
+        return { message : "User details saved successfully"};
+    }
+
+    getUserDetails(){
+        return { message : "User details fetched successfully"};
+    }
 }
