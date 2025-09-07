@@ -21,12 +21,12 @@ model User{
   updatedAt DateTime @updatedAt
 
 
-  email String?
+  email String? @unique
   countryCode String?
   phone String?
   firstName String?
   lastName String?
-  age String?
+  age Int?
   dateOfBirth DateTime?
   postalCode String?
   addressLine1 String?

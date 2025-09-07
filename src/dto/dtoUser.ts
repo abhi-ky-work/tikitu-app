@@ -34,40 +34,44 @@ export class SaveUserDetailsDto {
     @IsString()
     @IsNotEmpty()
     @MaxLength(50)
-    dateOfBirth
+    dateOfBirth :string;
     
     @IsString()
     @IsNotEmpty()
     @MaxLength(10)
-    postalCode
+    postalCode : string
     
     @IsString()
     @IsNotEmpty()
     @MaxLength(80)
-    addressLine1
+    addressLine1 : string
     
     @IsString()
     @IsNotEmpty()
     @MaxLength(80)
-    addressLine2
+    addressLine2 : string
     
     @IsString()
     @IsNotEmpty()
     @MaxLength(30)
-    country
+    country : string
     
     @IsString()
     @IsNotEmpty()
     @MaxLength(30)
-    state
-    
+    state : string
+
     @IsString()
     @IsNotEmpty()
     @MaxLength(30)
-    city
+    city : string
 
 }
 
-export interface GetUserDetailsDto {
-    userId: string;
+export class GetUserDetailsDto {
+
+    @IsEmail()
+    @IsNotEmpty()   
+    email : string;
+
 }
