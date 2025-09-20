@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client/extension';
+import { Prisma } from '@prisma/client';
+// import { PrismaClientKnownRequestError } from 'generated/prisma/runtime/library';
 import { GetUserDetailsDto, SaveUserDetailsDto } from 'src/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -24,16 +25,30 @@ export class UserService {
                 postalCode: dto.postalCode,
                 addressLine1: dto.addressLine1,
                 addressLine2: dto.addressLine2,
+            },
+            select: {
+                id: true,
+                email: true,
+                countryCode: true,
+                phone: true,
+                firstName: true,
             }
         });
 
         console.log("User created: ", user);
         return { message : "User details saved successfully",
-            email: user.email,  status: 200};
+            user: user,  status: 200};
 
             
         } catch (error) {
-            console.error("Error saving user details: ", error);
+
+            console.error("Error saving user details: ", error );
+
+            if( error instanceof Prisma.PrismaClientKnownRequestError ){
+                if(error.code === 'P2002'){
+                    return { message : "User with this email already exists", status: 400};
+                }
+            }
             return { message : "Error saving user details", status: 500};
         }
     }
