@@ -4,7 +4,7 @@ export class SaveUserDetailsDto {
  
     @IsString()
     @IsNotEmpty()
-    @MaxLength(50)
+    @MaxLength(50)      
     firstName : string
 
     @IsString()
