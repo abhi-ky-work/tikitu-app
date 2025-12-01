@@ -1,0 +1,37 @@
+{
+  "name": "tikitu-microservices",
+  "version": "1.0.0",
+  "description": "Tikitu Ticket Booking Application - Microservices",
+  "private": true,
+  "scripts": {
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose up -d --build",
+    "docker:logs": "docker-compose logs -f",
+    "health:check": "curl http://localhost:3000/api/v1/health/services",
+    "install:all": "npm run install:gateway && npm run install:user && npm run install:admin && npm run install:partner && npm run install:booking && npm run install:payment && npm run install:notification",
+    "install:gateway": "cd api-gateway && npm install",
+    "install:user": "cd user-service && npm install",
+    "install:admin": "cd admin-service && npm install",
+    "install:partner": "cd partner-service && npm install",
+    "install:booking": "cd booking-service && npm install",
+    "install:payment": "cd payment-service && npm install",
+    "install:notification": "cd notification-service && npm install",
+    "dev:gateway": "cd api-gateway && npm run start:dev",
+    "dev:user": "cd user-service && npm run start:dev",
+    "dev:admin": "cd admin-service && npm run start:dev",
+    "dev:partner": "cd partner-service && npm run start:dev",
+    "dev:booking": "cd booking-service && npm run start:dev",
+    "dev:payment": "cd payment-service && npm run start:dev",
+    "dev:notification": "cd notification-service && npm run start:dev"
+  },
+  "keywords": [
+    "microservices",
+    "nestjs",
+    "ticket-booking",
+    "api-gateway"
+  ],
+  "author": "",
+  "license": "UNLICENSED"
+}
+

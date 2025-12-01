@@ -1,0 +1,151 @@
+version: '3.8'
+
+services:
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: tikitu-api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - AWS_REGION=${AWS_REGION}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
+      - USER_SERVICE_URL=http://user-service:3001
+      - ADMIN_SERVICE_URL=http://admin-service:3002
+      - PARTNER_SERVICE_URL=http://partner-service:3003
+      - BOOKING_SERVICE_URL=http://booking-service:3004
+      - PAYMENT_SERVICE_URL=http://payment-service:3005
+      - NOTIFICATION_SERVICE_URL=http://notification-service:3006
+    depends_on:
+      - user-service
+      - admin-service
+      - partner-service
+      - booking-service
+      - payment-service
+      - notification-service
+    networks:
+      - tikitu-network
+    restart: unless-stopped
+
+  # User Service
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: tikitu-user-service
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+      - DATABASE_URL=${USER_DATABASE_URL}
+    networks:
+      - tikitu-network
+    restart: unless-stopped
+
+  # Admin Service
+  admin-service:
+    build:
+      context: ./admin-service
+      dockerfile: Dockerfile
+    container_name: tikitu-admin-service
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - NODE_ENV=production
+      - DATABASE_URL=${ADMIN_DATABASE_URL}
+    networks:
+      - tikitu-network
+    restart: unless-stopped
+
+  # Partner Service
+  partner-service:
+    build:
+      context: ./partner-service
+      dockerfile: Dockerfile
+    container_name: tikitu-partner-service
+    ports:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+      - NODE_ENV=production
+      - DATABASE_URL=${PARTNER_DATABASE_URL}
+    networks:
+      - tikitu-network
+    restart: unless-stopped
+
+  # Booking Service
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    container_name: tikitu-booking-service
+    ports:
+      - "3004:3004"
+    environment:
+      - PORT=3004
+      - NODE_ENV=production
+      - DATABASE_URL=${BOOKING_DATABASE_URL}
+      - PAYMENT_SERVICE_URL=http://payment-service:3005
+      - NOTIFICATION_SERVICE_URL=http://notification-service:3006
+    depends_on:
+      - payment-service
+      - notification-service
+    networks:
+      - tikitu-network
+    restart: unless-stopped
+
+  # Payment Service
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: tikitu-payment-service
+    ports:
+      - "3005:3005"
+    environment:
+      - PORT=3005
+      - NODE_ENV=production
+      - DATABASE_URL=${PAYMENT_DATABASE_URL}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - BOOKING_SERVICE_URL=http://booking-service:3004
+      - NOTIFICATION_SERVICE_URL=http://notification-service:3006
+    depends_on:
+      - notification-service
+    networks:
+      - tikitu-network
+    restart: unless-stopped
+
+  # Notification Service
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: tikitu-notification-service
+    ports:
+      - "3006:3006"
+    environment:
+      - PORT=3006
+      - NODE_ENV=production
+      - DATABASE_URL=${NOTIFICATION_DATABASE_URL}
+      - AWS_SES_REGION=${AWS_SES_REGION}
+      - AWS_SES_ACCESS_KEY=${AWS_SES_ACCESS_KEY}
+      - AWS_SES_SECRET_KEY=${AWS_SES_SECRET_KEY}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+    networks:
+      - tikitu-network
+    restart: unless-stopped
+
+networks:
+  tikitu-network:
+    driver: bridge
+
